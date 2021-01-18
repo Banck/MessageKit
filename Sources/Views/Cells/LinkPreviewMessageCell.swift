@@ -24,6 +24,7 @@
 
 import UIKit
 
+@available(iOS 11.0, *)
 open class LinkPreviewMessageCell: TextMessageCell {
     public lazy var linkPreviewView: LinkPreviewView = {
         let view = LinkPreviewView()

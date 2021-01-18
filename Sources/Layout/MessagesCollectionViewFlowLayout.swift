@@ -170,6 +170,7 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
     lazy open var audioMessageSizeCalculator = AudioMessageSizeCalculator(layout: self)
     lazy open var contactMessageSizeCalculator = ContactMessageSizeCalculator(layout: self)
     lazy open var typingIndicatorSizeCalculator = TypingCellSizeCalculator(layout: self)
+    @available(iOS 11.0, *)
     lazy open var linkPreviewMessageSizeCalculator = LinkPreviewMessageSizeCalculator(layout: self)
 
     /// Note:
@@ -200,7 +201,12 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
         case .contact:
             return contactMessageSizeCalculator
         case .linkPreview:
-            return linkPreviewMessageSizeCalculator
+            if #available(iOS 11.0, *) {
+                return linkPreviewMessageSizeCalculator
+            } else {
+                // Fallback on earlier versions
+                return textMessageSizeCalculator
+            }
         case .custom:
             return messagesLayoutDelegate.customCellSizeCalculator(for: message, at: indexPath, in: messagesCollectionView)
         }
@@ -318,16 +324,19 @@ open class MessagesCollectionViewFlowLayout: UICollectionViewFlowLayout {
 
     /// Get all `MessageSizeCalculator`s
     open func messageSizeCalculators() -> [MessageSizeCalculator] {
-        return [textMessageSizeCalculator,
-                attributedTextMessageSizeCalculator,
-                emojiMessageSizeCalculator,
-                photoMessageSizeCalculator,
-                videoMessageSizeCalculator,
-                locationMessageSizeCalculator,
-                audioMessageSizeCalculator,
-                contactMessageSizeCalculator,
-                linkPreviewMessageSizeCalculator
-        ]
+        var calculators: [MessageSizeCalculator] = [textMessageSizeCalculator,
+                           attributedTextMessageSizeCalculator,
+                           emojiMessageSizeCalculator,
+                           photoMessageSizeCalculator,
+                           videoMessageSizeCalculator,
+                           locationMessageSizeCalculator,
+                           audioMessageSizeCalculator,
+                           contactMessageSizeCalculator,
+                   ]
+        if #available(iOS 11.0, *) {
+            calculators.append(linkPreviewMessageSizeCalculator)
+        }
+        return calculators
     }
     
 }

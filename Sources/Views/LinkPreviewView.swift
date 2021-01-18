@@ -24,6 +24,7 @@
 
 import UIKit
 
+@available(iOS 11.0, *)
 open class LinkPreviewView: UIView {
     lazy var imageView: UIImageView = {
         let imageView: UIImageView = .init()

@@ -25,6 +25,7 @@
 import Foundation
 import UIKit
 
+@available(iOS 11.0, *)
 open class LinkPreviewMessageSizeCalculator: TextMessageSizeCalculator {
 
     static let imageViewSize: CGFloat = 60
@@ -93,6 +94,7 @@ open class LinkPreviewMessageSizeCalculator: TextMessageSizeCalculator {
     }
 }
 
+@available(iOS 11.0, *)
 private extension LinkPreviewMessageSizeCalculator {
     private func calculateContainerSize(with attibutedString: NSAttributedString, containerSize: inout CGSize, maxWidth: CGFloat) {
         guard !attibutedString.string.isEmpty else { return }

@@ -33,6 +33,9 @@ internal extension MessagesViewController {
     func addKeyboardObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(MessagesViewController.handleKeyboardDidChangeState(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(MessagesViewController.handleTextViewDidBeginEditing(_:)), name: UITextView.textDidBeginEditingNotification, object: nil)
+        if #available(iOS 11.0, *) {} else {
+            NotificationCenter.default.addObserver(self, selector: #selector(MessagesViewController.adjustScrollViewTopInset), name: UIDevice.orientationDidChangeNotification, object: nil)
+        }
     }
 
     func removeKeyboardObservers() {
@@ -114,7 +117,20 @@ internal extension MessagesViewController {
     }
 
     // MARK: - Inset Computation
-
+    
+    @objc
+    func adjustScrollViewTopInset() {
+        if #available(iOS 11.0, *) {
+            // No need to add to the top contentInset
+        } else {
+            let navigationBarInset = navigationController?.navigationBar.frame.height ?? 0
+            let statusBarInset: CGFloat = UIApplication.shared.isStatusBarHidden ? 0 : 20
+            let topInset = navigationBarInset + statusBarInset
+            messagesCollectionView.contentInset.top = topInset
+            messagesCollectionView.scrollIndicatorInsets.top = topInset
+        }
+    }
+    
     private func requiredScrollViewBottomInset(forKeyboardFrame keyboardFrame: CGRect) -> CGFloat {
         // we only need to adjust for the part of the keyboard that covers (i.e. intersects) our collection view;
         // see https://developer.apple.com/videos/play/wwdc2017/242/ for more details
@@ -139,6 +155,10 @@ internal extension MessagesViewController {
     ///
     /// - Returns: The distance automatically added to contentInset.bottom, if any.
     private var automaticallyAddedBottomInset: CGFloat {
-        return messagesCollectionView.adjustedContentInset.bottom - messagesCollectionView.contentInset.bottom
+        if #available(iOS 11.0, *) {
+            return messagesCollectionView.adjustedContentInset.bottom - messagesCollectionView.contentInset.bottom
+        } else {
+            return 0
+        }
     }
 }

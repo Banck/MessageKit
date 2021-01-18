@@ -58,6 +58,7 @@ public enum MessageKind {
     case contact(ContactItem)
 
     /// A link preview message.
+    @available(iOS 11.0, *)
     case linkPreview(LinkItem)
 
     /// A custom message.
