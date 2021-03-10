@@ -224,11 +224,7 @@ open class MessagesViewController: UIViewController,
     
     private func setupDefaults() {
         extendedLayoutIncludesOpaqueBars = true
-        if #available(iOS 11.0, *) {
-            messagesCollectionView.contentInsetAdjustmentBehavior = .never
-        } else {
-            automaticallyAdjustsScrollViewInsets = false
-        }
+        view.backgroundColor = .collectionViewBackground
         messagesCollectionView.keyboardDismissMode = .interactive
         messagesCollectionView.alwaysBounceVertical = true
         messagesCollectionView.backgroundColor = .collectionViewBackground
@@ -249,6 +245,7 @@ open class MessagesViewController: UIViewController,
     private func setupConstraints() {
         messagesCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
+        let top = messagesCollectionView.topAnchor.constraint(equalTo: view.topAnchor)
         let bottom = messagesCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         
         if #available(iOS 11.0, *) {
